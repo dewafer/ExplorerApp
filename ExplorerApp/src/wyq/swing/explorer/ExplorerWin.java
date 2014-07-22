@@ -228,8 +228,8 @@ public class ExplorerWin implements TreeSelectionListener {
 			String filter = filterTextField.getText();
 			adp.search(filter);
 			model.setData(Collections.EMPTY_MAP);
-			reloadTree();
 		}
+		reloadTree();
 	}
 
 	protected void clear(ActionEvent e) {
@@ -238,8 +238,8 @@ public class ExplorerWin implements TreeSelectionListener {
 			ServiceTreeLoaderAdaptor adp = (ServiceTreeLoaderAdaptor) treeLoader;
 			adp.clear();
 			model.setData(Collections.EMPTY_MAP);
-			reloadTree();
 		}
+		reloadTree();
 	}
 
 	protected void commit(ActionEvent e) {
@@ -296,21 +296,24 @@ public class ExplorerWin implements TreeSelectionListener {
 	}
 
 	private void reloadTree() {
-		if (treeLoader != null
-				&& treeLoader instanceof ServiceTreeLoaderAdaptor) {
-			ServiceTreeLoaderAdaptor adp = (ServiceTreeLoaderAdaptor) treeLoader;
-			adp.reloadAll();
-			// recalculate padding asterisk
-			Enumeration<?> breadthFirstEnumeration = adp.getRootNode()
-					.breadthFirstEnumeration();
-			while (breadthFirstEnumeration.hasMoreElements()) {
-				Object object = breadthFirstEnumeration.nextElement();
-				if (object instanceof LabeledDefaultMutableTreeNode) {
-					LabeledDefaultMutableTreeNode node = (LabeledDefaultMutableTreeNode) object;
-					node.setPadding(paddings.containsKey(node.getKey()));
+		if (treeLoader != null) {
+			if (treeLoader instanceof ServiceTreeLoaderAdaptor) {
+				ServiceTreeLoaderAdaptor adp = (ServiceTreeLoaderAdaptor) treeLoader;
+				adp.reloadAll();
+				// recalculate padding asterisk
+				Enumeration<?> breadthFirstEnumeration = adp.getRootNode()
+						.breadthFirstEnumeration();
+				while (breadthFirstEnumeration.hasMoreElements()) {
+					Object object = breadthFirstEnumeration.nextElement();
+					if (object instanceof LabeledDefaultMutableTreeNode) {
+						LabeledDefaultMutableTreeNode node = (LabeledDefaultMutableTreeNode) object;
+						node.setPadding(paddings.containsKey(node.getKey()));
+					}
 				}
+				adp.getTreeModel().reload();
+			} else {
+				treeLoader.reloadAll();
 			}
-			adp.getTreeModel().reload();
 		}
 	}
 
